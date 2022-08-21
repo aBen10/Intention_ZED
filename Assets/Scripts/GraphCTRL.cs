@@ -43,8 +43,7 @@ public class GraphCTRL : MonoBehaviour
         iButton = Resources.Load("iButton") as GameObject;
         iButton2 = Resources.Load("iButton2") as GameObject;
         eButton = Resources.Load("eButton") as GameObject;
-        //aButton = Resources.Load("aButton") as GameObject;
-        aButton = Resources.Load("ButTest") as GameObject;
+        aButton = Resources.Load("aButton") as GameObject;
         aButton2 = Resources.Load("aButton2") as GameObject;
         line = Resources.Load("LineDown") as GameObject;
         lineDiag = Resources.Load("LineDiag") as GameObject;
@@ -261,15 +260,19 @@ public class GraphCTRL : MonoBehaviour
             else if (graph.aNodes.Count > aCount + 1 && node == graph.aNodes[aCount + 1])
             {
                 but = Instantiate(aButton2, rightButtons.transform, false);
-                but.GetComponentInChildren<TMPro.TextMeshProUGUI>().text = "A" + (aCount + 1);
-                but.gameObject.GetComponent<Button>().onClick.AddListener(() => InstantiateVid(node));
+                ButData data = but.GetComponent<ButData>();
+                data.node = node;
+                //but.GetComponentInChildren<TMPro.TextMeshProUGUI>().text = "A" + (aCount + 1);
+                //but.gameObject.GetComponent<Button>().onClick.AddListener(() => InstantiateVid(node));
                 //Debug.Log("Drawing a node: " + (aCount + 1) + " at position: " + node.Position);
             }
             else
             {
                 but = Instantiate(aButton2, leftButtons.transform, false);
-                but.GetComponentInChildren<TMPro.TextMeshProUGUI>().text = "A" + (aCount - 1);
-                but.gameObject.GetComponent<Button>().onClick.AddListener(() => InstantiateVid(node));
+                ButData data = but.GetComponent<ButData>();
+                data.node = node;
+                //but.GetComponentInChildren<TMPro.TextMeshProUGUI>().text = "A" + (aCount - 1);
+                //but.gameObject.GetComponent<Button>().onClick.AddListener(() => InstantiateVid(node));
                 //Debug.Log("Drawing a node: " + (aCount - 1) + " at position: " + node.Position);
             }
         }
@@ -278,19 +281,19 @@ public class GraphCTRL : MonoBehaviour
             if (node == graph.iNodes[iCount])
             {
                 but = Instantiate(iButton, panel.transform, false);
-                but.GetComponentInChildren<TMPro.TextMeshProUGUI>().text = "I" + (iCount);
+                //but.GetComponentInChildren<TMPro.TextMeshProUGUI>().text = "I" + (iCount);
                 //Debug.Log("Drawing i node: " + iCount + " at position: " + node.Position);
             }
             else if (graph.iNodes.Count > iCount + 1 && node == graph.iNodes[iCount + 1])
             {
                 but = Instantiate(iButton2, rightButtons.transform, false);
-                but.GetComponentInChildren<TMPro.TextMeshProUGUI>().text = "I" + (iCount + 1);
+                //but.GetComponentInChildren<TMPro.TextMeshProUGUI>().text = "I" + (iCount + 1);
                 //Debug.Log("Drawing i node: " + (iCount + 1) + " at position: " + node.Position);
             }
             else
             {
                 but = Instantiate(iButton2, leftButtons.transform, false);
-                but.GetComponentInChildren<TMPro.TextMeshProUGUI>().text = "I" + (iCount-1);
+                //but.GetComponentInChildren<TMPro.TextMeshProUGUI>().text = "I" + (iCount-1);
                 //Debug.Log("Drawing i node: " + (iCount - 1) + " at position: " + node.Position);
             }
         }
@@ -300,7 +303,7 @@ public class GraphCTRL : MonoBehaviour
             //but.GetComponentInChildren<TextMeshPro>().text = "test";
 
         }
-        but.GetComponent<Transform>().localPosition = panel.transform.position + node.Position;
+        but.GetComponent<Transform>().localPosition = panel.transform.position + node.Position + new Vector3(0,0,-20);
         //but.GetComponent<MeshRenderer>().material.SetColor("_Color", node.NodeColor);
         //Debug.Log("Drawing");
     }
@@ -325,8 +328,24 @@ public class GraphCTRL : MonoBehaviour
         instantiatedPreview = go;
         if (graph.aNodes.Contains(node))
         {
+            VideoClip vid = Clips[graph.aNodes.IndexOf(node)];
             instantiatedPreview.GetComponent<Transform>().localPosition = instantiatePoint;
-            instantiatedPreview.GetComponent<VideoPlayer>().clip = Clips[graph.aNodes.IndexOf(node)];
+            instantiatedPreview.GetComponent<VideoPlayer>().clip = vid;
+            StartCoroutine(VidTimer(vid));
+        }
+    }
+
+    IEnumerator VidTimer(VideoClip vid)
+    {
+        yield return new WaitForSeconds((float)vid.length);
+        DestroyVid();
+    }
+    public void DestroyVid()
+    {
+        if (GameObject.Find("ScrubScreenBig(Clone)"))
+        {
+            Destroy(GameObject.Find("ScrubScreenBig(Clone)"));
+            return;
         }
     }
 

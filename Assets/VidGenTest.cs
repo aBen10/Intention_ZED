@@ -6,26 +6,24 @@ public class VidGenTest : MonoBehaviour
 {
     GameObject button;
     public GraphCTRL graph;
+    bool VideoOn = false;
     void Start()
     {
-        button = GameObject.Find("ButTest(Clone)");
+        //button = GameObject.Find("ButTest(Clone)");
         graph = GameObject.Find("RightPanel").GetComponent<GraphCTRL>();
 
         GraphCTRL.Node node = transform.parent.gameObject.GetComponent<ButData>().node;
+        /*if (!VideoOn) { graph.InstantiateVid(node); }
+        else { graph.DestroyVid(); }*/
+        graph.DestroyVid();
         graph.InstantiateVid(node);
         Debug.Log("INSTANTIATEINIG");
-        /*        if (graph.aNodes.Contains(node))
-                {
-                    graph.InstantiateVid();
-                }
-                */
         //button.SetActive(false);
     }
 
     // Update is called once per frame
     void Update()
     {
-        //button.SetActive(false);
-        //Debug.Log("OFF");
+
     }
 }
