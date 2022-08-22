@@ -19,13 +19,15 @@ public class GraphCTRL : MonoBehaviour
 {
 
     Graph graph;
-    private GameObject eButton, eButton2, iButton, iButton2, aButton, aButton2;
+    private GameObject eButton, eButton2, iButton, iButton2, aButton, aButton2, TestB;
     public GameObject panel, rightButtons, leftButtons;
     public GameObject preview, instantiatedPreview;
     public Material lineMaterial;
     private GameObject line, lineDiag;
     private Vector3 Elast, Enow, Enext, Ilast, Inow, Inext, Alast, Anow, Anext;
-    public List<VideoClip> Clips = new List<VideoClip>();
+    public List<VideoClip> aClips = new List<VideoClip>();
+    public List<VideoClip> eClips = new List<VideoClip>();
+    public List<VideoClip> iClips = new List<VideoClip>();
     int count = 0;
     int x = 0;
     int drawCount = 0;
@@ -35,10 +37,15 @@ public class GraphCTRL : MonoBehaviour
     void Start()
     {
         //Loads clips from Resources folder into list
-        Clips.AddRange(Resources.LoadAll<VideoClip>("Clips"));
-        Debug.Log(Clips.Count);
-        Debug.Log(Clips[0].name);
-        Debug.Log(Clips[0]);
+        aClips.AddRange(Resources.LoadAll<VideoClip>("aClips"));
+        iClips.AddRange(Resources.LoadAll<VideoClip>("iClips"));
+        eClips.AddRange(Resources.LoadAll<VideoClip>("eClips"));
+        Debug.Log(aClips.Count);
+        Debug.Log(aClips[0]);
+        Debug.Log(iClips.Count);
+        Debug.Log(iClips[0]);
+        Debug.Log(eClips.Count);
+        Debug.Log(eClips[0]);
         //load button and lineprefabs from Resources folder
         iButton = Resources.Load("iButton") as GameObject;
         iButton2 = Resources.Load("iButton2") as GameObject;
@@ -56,19 +63,8 @@ public class GraphCTRL : MonoBehaviour
         //Pnow = new Vector3(-300, -998, 0);
         //Pnext = new Vector3(300, -998, 0);
 
-        var e0 = new Node() { NodeColor = Color.red, Position = Enow }; var e1 = new Node() { };
-        var i0 = new Node() { NodeColor = Color.blue, Position = Inow, Parent = e0 };
-        var i1 = new Node() { NodeColor = Color.blue, Position = Inext, Parent = e0 };
-        var i2 = new Node() { Parent = e0 }; var i3 = new Node() { Parent = e1 }; var i4 = new Node() { Parent = e1 };
-        var a0 = new Node() { NodeColor = Color.green, Position = Anow, Parent = i0, };
-        var a1 = new Node() { NodeColor = Color.green, Position = Anext, Parent = i0 };
-        var a2 = new Node() { Parent = i0 }; var a3 = new Node() { Parent = i0 }; var a4 = new Node() { Parent = i1 };  var a5 = new Node() { Parent = i1 };   
-        var a6 = new Node() { Parent = i2 }; var a7 = new Node() { Parent = i3 }; var a8 = new Node() { Parent = i4 };
-
-        graph.eNodes.Add(e0); graph.eNodes.Add(e1);
-        graph.iNodes.Add(i0); graph.iNodes.Add(i1); graph.iNodes.Add(i2); graph.iNodes.Add(i3); graph.iNodes.Add(i4);
-        graph.aNodes.Add(a0); graph.aNodes.Add(a1); graph.aNodes.Add(a2); graph.aNodes.Add(a3); graph.aNodes.Add(a4); graph.aNodes.Add(a5); graph.aNodes.Add(a6); graph.aNodes.Add(a7); graph.aNodes.Add(a8);
-
+        MakeNodes();
+        
         Debug.Log(" aNodes: " + graph.aNodes.Count + " iNodes: " + graph.iNodes.Count + " eNodes: " + graph.eNodes.Count);
         Build();
         GameObject.Find("LineDiag2").GetComponent<Image>().enabled = false;
@@ -251,17 +247,12 @@ public class GraphCTRL : MonoBehaviour
             if (node == graph.aNodes[aCount])
             {
                 but = Instantiate(aButton, panel.transform, false);
-                ButData data = but.GetComponent<ButData>();
-                data.node = node;
-                //but.GetComponentInChildren<TMPro.TextMeshProUGUI>().text = "A" + (aCount);
-                //but.gameObject.GetComponent<Button>().onClick.AddListener(() => InstantiateVid(node));
+                but.GetComponentInChildren<TMPro.TextMeshPro>().text = "A" + (aCount);
                 //Debug.Log("Drawing a node: " + aCount + " at position: " + node.Position);
             }
             else if (graph.aNodes.Count > aCount + 1 && node == graph.aNodes[aCount + 1])
             {
                 but = Instantiate(aButton2, rightButtons.transform, false);
-                ButData data = but.GetComponent<ButData>();
-                data.node = node;
                 //but.GetComponentInChildren<TMPro.TextMeshProUGUI>().text = "A" + (aCount + 1);
                 //but.gameObject.GetComponent<Button>().onClick.AddListener(() => InstantiateVid(node));
                 //Debug.Log("Drawing a node: " + (aCount + 1) + " at position: " + node.Position);
@@ -269,8 +260,6 @@ public class GraphCTRL : MonoBehaviour
             else
             {
                 but = Instantiate(aButton2, leftButtons.transform, false);
-                ButData data = but.GetComponent<ButData>();
-                data.node = node;
                 //but.GetComponentInChildren<TMPro.TextMeshProUGUI>().text = "A" + (aCount - 1);
                 //but.gameObject.GetComponent<Button>().onClick.AddListener(() => InstantiateVid(node));
                 //Debug.Log("Drawing a node: " + (aCount - 1) + " at position: " + node.Position);
@@ -303,7 +292,11 @@ public class GraphCTRL : MonoBehaviour
             //but.GetComponentInChildren<TextMeshPro>().text = "test";
 
         }
+        ButData data = but.GetComponent<ButData>();
+        data.node = node;
         but.GetComponent<Transform>().localPosition = panel.transform.position + node.Position + new Vector3(0,0,-20);
+        if (node.Name!=null) { but.GetComponentInChildren<TMPro.TextMeshPro>().text = node.Name; }
+
         //but.GetComponent<MeshRenderer>().material.SetColor("_Color", node.NodeColor);
         //Debug.Log("Drawing");
     }
@@ -316,23 +309,25 @@ public class GraphCTRL : MonoBehaviour
             Destroy(GameObject.Find("ScrubScreenBig(Clone)"));
             return;
         }
-        Debug.Log("Instantiate Video");
+        //Debug.Log("Instantiate Video");
         Vector3 instantiatePoint = panel.transform.position;
-        instantiatePoint.y = instantiatePoint.y - 400;
+        instantiatePoint.y = node.Position.y;
         instantiatePoint.x = instantiatePoint.x - 1000;
         //GameObject go = Instantiate(preview, instantiatePoint, Quaternion.identity, GameObject.Find("Progress").transform);
         //GameObject go = Instantiate(preview, GameObject.Find("aButton(Clone)").transform, false);
         GameObject go = Instantiate(preview, panel.transform, false);
 
-        Debug.Log("Initial POS: " + go.GetComponent<Transform>().position);
         instantiatedPreview = go;
-        if (graph.aNodes.Contains(node))
-        {
-            VideoClip vid = Clips[graph.aNodes.IndexOf(node)];
-            instantiatedPreview.GetComponent<Transform>().localPosition = instantiatePoint;
-            instantiatedPreview.GetComponent<VideoPlayer>().clip = vid;
-            StartCoroutine(VidTimer(vid));
-        }
+        VideoClip vid;
+        
+        if (graph.aNodes.Contains(node)) {vid = aClips[graph.aNodes.IndexOf(node)]; }
+        else if (graph.iNodes.Contains(node)) { vid = iClips[graph.iNodes.IndexOf(node)]; }
+        else { vid = eClips[graph.eNodes.IndexOf(node)]; }
+        
+        instantiatedPreview.GetComponent<VideoPlayer>().clip = vid;
+        StartCoroutine(VidTimer(vid));
+        instantiatedPreview.GetComponent<Transform>().localPosition = instantiatePoint;
+
     }
 
     IEnumerator VidTimer(VideoClip vid)
@@ -345,8 +340,34 @@ public class GraphCTRL : MonoBehaviour
         if (GameObject.Find("ScrubScreenBig(Clone)"))
         {
             Destroy(GameObject.Find("ScrubScreenBig(Clone)"));
+            Debug.Log("Destroying");
             return;
         }
+    }
+
+    private void MakeNodes()
+    {
+        //5 events
+        var e0 = new Node() { Position = Enow, Name = "Base" }; var e1 = new Node() { Name = "Printer" }; var e2 = new Node() { Name = "Stand" }; var e3 = new Node() { Name = "Arm" }; var e4 = new Node() { Name = "Head" };
+        //Event 0 has 5 interactions
+        var i0 = new Node() { Position = Inow, Parent = e0 }; var i1 = new Node() { Position = Inext, Parent = e0 }; var i2 = new Node() { Parent = e0 }; var i3 = new Node() { Parent = e0 }; var i4 = new Node() { Parent = e0 };
+        //Event 1 has 8 interactions
+        var i5 = new Node() { Parent = e1 }; var i6 = new Node() { Parent = e1 }; var i7 = new Node() { Parent = e1 }; var i8 = new Node() { Parent = e1 }; var i9 = new Node() { Parent = e1 }; var i10 = new Node() { Parent = e1 }; var i11 = new Node() { Parent = e1 }; var i12 = new Node() { Parent = e1 };
+        //Event 2 has 4 interactions
+        var i13 = new Node() { Parent = e2 }; var i14 = new Node() { Parent = e2 }; var i15 = new Node() { Parent = e2 }; var i16 = new Node() { Parent = e2 };
+        //Event 3 has 3 interactions
+        var i17 = new Node() { Parent = e3 }; var i18 = new Node() { Parent = e3 }; var i19 = new Node() { Parent = e3 };
+        //Event 4 has 6 interactions
+        var i20 = new Node() { Parent = e4 }; var i21 = new Node() { Parent = e4 }; var i22 = new Node() { Parent = e4 }; var i23 = new Node() { Parent = e4 }; var i24 = new Node() { Parent = e4 }; var i25 = new Node() { Parent = e4 };
+
+        var a0 = new Node() { Position = Anow, Parent = i0, };  var a1 = new Node() { Position = Anext, Parent = i0 };
+        var a2 = new Node() { Parent = i0 }; var a3 = new Node() { Parent = i0 }; var a4 = new Node() { Parent = i1 }; var a5 = new Node() { Parent = i1 };
+        var a6 = new Node() { Parent = i2 }; var a7 = new Node() { Parent = i3 }; var a8 = new Node() { Parent = i4 };
+
+        graph.eNodes.Add(e0); graph.eNodes.Add(e1); graph.eNodes.Add(e2); graph.eNodes.Add(e3); graph.eNodes.Add(e4);
+        graph.iNodes.Add(i0); graph.iNodes.Add(i1); graph.iNodes.Add(i2); graph.iNodes.Add(i3); graph.iNodes.Add(i4);
+        graph.aNodes.Add(a0); graph.aNodes.Add(a1); graph.aNodes.Add(a2); graph.aNodes.Add(a3); graph.aNodes.Add(a4); graph.aNodes.Add(a5); graph.aNodes.Add(a6); graph.aNodes.Add(a7); graph.aNodes.Add(a8);
+
     }
 
     public class Graph
@@ -381,6 +402,7 @@ public class GraphCTRL : MonoBehaviour
         public Color NodeColor { get; set; }
         public Vector3 Position { get; set; }
         public Node Parent { get; set; }
+        public String Name { get; set; }
         public String File { get; set; }
         public List<GameObject> Highlights { get; set; }
     }

@@ -17,8 +17,9 @@ public class VidGenTest : MonoBehaviour
         else { graph.DestroyVid(); }*/
         graph.DestroyVid();
         graph.InstantiateVid(node);
-        Debug.Log("INSTANTIATEINIG");
+        Debug.Log("INSTANTIATEING");
         //button.SetActive(false);
+        
     }
 
     // Update is called once per frame
