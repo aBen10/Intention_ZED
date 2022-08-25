@@ -1,6 +1,6 @@
 %YAML 1.1
 %TAG !u! tag:unity3d.com,2011:
---- !u!1 &1869294067559357733
+--- !u!1 &7722117741522721723
 GameObject:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -8,51 +8,53 @@ GameObject:
   m_PrefabAsset: {fileID: 0}
   serializedVersion: 6
   m_Component:
-  - component: {fileID: 1101551618304209463}
-  - component: {fileID: 6894856626583632567}
-  - component: {fileID: 14881805947060759}
-  - component: {fileID: 5836837482872554001}
-  - component: {fileID: 3182002088571852386}
+  - component: {fileID: 1340281176237275332}
+  - component: {fileID: 5230962757631754114}
+  - component: {fileID: 1631157106357426038}
+  - component: {fileID: 8196238932635733624}
+  - component: {fileID: 3649502002373437786}
   m_Layer: 0
-  m_Name: ScrubScreen
+  m_Name: ButtonScreen
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
   m_IsActive: 1
---- !u!4 &1101551618304209463
+--- !u!4 &1340281176237275332
 Transform:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1869294067559357733}
+  m_GameObject: {fileID: 7722117741522721723}
   m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
-  m_LocalPosition: {x: -5.5495, y: 258, z: -9.353169}
-  m_LocalScale: {x: 2.961298, y: 1.6657301, z: 0.18508112}
+  m_LocalPosition: {x: 145, y: -115, z: -9.353169}
+  m_LocalScale: {x: 585.82574, y: 329.527, z: 36.61411}
+  m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 0}
   m_RootOrder: 0
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!33 &6894856626583632567
+--- !u!33 &5230962757631754114
 MeshFilter:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1869294067559357733}
+  m_GameObject: {fileID: 7722117741522721723}
   m_Mesh: {fileID: 10210, guid: 0000000000000000e000000000000000, type: 0}
---- !u!23 &14881805947060759
+--- !u!23 &1631157106357426038
 MeshRenderer:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1869294067559357733}
+  m_GameObject: {fileID: 7722117741522721723}
   m_Enabled: 1
   m_CastShadows: 1
   m_ReceiveShadows: 1
   m_DynamicOccludee: 1
+  m_StaticShadowCaster: 0
   m_MotionVectors: 1
   m_LightProbeUsage: 1
   m_ReflectionProbeUsage: 1
@@ -83,13 +85,13 @@ MeshRenderer:
   m_SortingLayer: 0
   m_SortingOrder: 0
   m_AdditionalVertexStreams: {fileID: 0}
---- !u!64 &5836837482872554001
+--- !u!64 &8196238932635733624
 MeshCollider:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1869294067559357733}
+  m_GameObject: {fileID: 7722117741522721723}
   m_Material: {fileID: 0}
   m_IsTrigger: 0
   m_Enabled: 1
@@ -97,35 +99,33 @@ MeshCollider:
   m_Convex: 0
   m_CookingOptions: 30
   m_Mesh: {fileID: 10210, guid: 0000000000000000e000000000000000, type: 0}
---- !u!328 &3182002088571852386
+--- !u!328 &3649502002373437786
 VideoPlayer:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1869294067559357733}
+  m_GameObject: {fileID: 7722117741522721723}
   m_Enabled: 1
-  m_VideoClip: {fileID: 32900000, guid: a840ad8f084052641ad1ed3b2e434c89, type: 3}
+  m_VideoClip: {fileID: 32900000, guid: 54f346f33d8ec11468b75cd1b827ab51, type: 3}
   m_TargetCameraAlpha: 1
   m_TargetCamera3DLayout: 0
   m_TargetCamera: {fileID: 0}
   m_TargetTexture: {fileID: 0}
   m_TimeReference: 0
   m_TargetMaterialRenderer: {fileID: 0}
-  m_TargetMaterialProperty: _MainTex
+  m_TargetMaterialProperty: <noninit>
   m_RenderMode: 3
   m_AspectRatio: 2
   m_DataSource: 0
   m_PlaybackSpeed: 1
   m_AudioOutputMode: 2
-  m_TargetAudioSources:
-  - {fileID: 0}
-  m_DirectAudioVolumes:
-  - 1
+  m_TargetAudioSources: []
+  m_DirectAudioVolumes: []
   m_Url: 
-  m_EnabledAudioTracks: 01
-  m_DirectAudioMutes: 00
-  m_ControlledAudioTrackCount: 1
+  m_EnabledAudioTracks: 
+  m_DirectAudioMutes: 
+  m_ControlledAudioTrackCount: 0
   m_PlayOnAwake: 1
   m_SkipOnDrop: 1
   m_Looping: 0

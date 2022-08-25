@@ -14,7 +14,7 @@ GameObject:
   - component: {fileID: 8196238932635733624}
   - component: {fileID: 3649502002373437786}
   m_Layer: 0
-  m_Name: ScrubScreenBig
+  m_Name: GraphScreen
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -107,7 +107,7 @@ VideoPlayer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 7722117741522721723}
   m_Enabled: 1
-  m_VideoClip: {fileID: 32900000, guid: 54f346f33d8ec11468b75cd1b827ab51, type: 3}
+  m_VideoClip: {fileID: 32900000, guid: 8e4629ac09ca3d541a2ea8e655430ad5, type: 3}
   m_TargetCameraAlpha: 1
   m_TargetCamera3DLayout: 0
   m_TargetCamera: {fileID: 0}
@@ -128,7 +128,7 @@ VideoPlayer:
   m_ControlledAudioTrackCount: 0
   m_PlayOnAwake: 1
   m_SkipOnDrop: 1
-  m_Looping: 0
+  m_Looping: 1
   m_WaitForFirstFrame: 1
   m_FrameReadyEventEnabled: 0
   m_VideoShaders: []
