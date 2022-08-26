@@ -13,9 +13,10 @@ GameObject:
   - component: {fileID: 1631157106357426038}
   - component: {fileID: 8196238932635733624}
   - component: {fileID: 3649502002373437786}
+  - component: {fileID: -5067312965236733291}
   m_Layer: 0
   m_Name: GraphScreen
-  m_TagString: Untagged
+  m_TagString: GraphScreen
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -132,3 +133,16 @@ VideoPlayer:
   m_WaitForFirstFrame: 1
   m_FrameReadyEventEnabled: 0
   m_VideoShaders: []
+--- !u!114 &-5067312965236733291
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 7722117741522721723}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 25baaef549b4657458e3cac8f717385d, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  videoPlayer: {fileID: 3649502002373437786}

@@ -1,9 +1,11 @@
+using Oculus.Interaction.Input;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
 public class WristScreenPositioner : MonoBehaviour
 {
+    public IHand Hand;
     public GameObject rhand;
     public GameObject rhandDirRefPalm;
     public GameObject rhandDirRefKnuckle;
@@ -18,6 +20,11 @@ public class WristScreenPositioner : MonoBehaviour
     
     void wristWatchRotateHead()
     {
+        // if (!Hand.GetJointPosesLocal(out ReadOnlyHandJointPoses localJoints))
+            // return;
+
+        // Vector3 handPos = localJoints[0].position;
+        // Vector3 palmPos = localJoints[
 
         Vector3 x = (rhandDirRefPalm.transform.position - rhand.transform.position).normalized;
         Vector3 headDir = head.transform.position - rhand.transform.position;
@@ -28,10 +35,11 @@ public class WristScreenPositioner : MonoBehaviour
         Vector3 y = Vector3.Cross(z, x).normalized;
         float angle = Vector3.Angle(y, proj) * Mathf.Deg2Rad;
         angle *= Mathf.Sign(Vector3.Dot(Vector3.Cross(y, proj), x));
+        // angle = 30 * Mathf.Deg2Rad;
 
         Vector3 circDir = .05f * (Mathf.Cos(angle) * y + Mathf.Sin(angle) * z).normalized;
 
-        Vector3 wristPos = rhand.transform.position + circDir - 0.05f * x;
+        Vector3 wristPos = rhand.transform.position + circDir; //- 0.05f * x;
         Vector3 wristDir = circDir;
 
         transform.position = wristPos;
