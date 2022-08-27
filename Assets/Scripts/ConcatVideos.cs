@@ -33,10 +33,10 @@ public class ConcatVideos : MonoBehaviour
 /*    void Start()
     {
         aClips = new List<VideoClip>();
-        aClips.AddRange(Resources.LoadAll<VideoClip>("aClips"));
-        PlayBackToBack(aClips[1], aClips[2], 5, 5);
+        aClips.AddRange(Resources.LoadAll<VideoClip>("iClips"));
+        PlayBackToBack(aClips[0], aClips[2], 5, 5);
 
-        StartCoroutine(TestPlayLater());
+        // StartCoroutine(TestPlayLater());
     }
 
     IEnumerator TestPlayLater()
@@ -85,11 +85,13 @@ public class ConcatVideos : MonoBehaviour
     IEnumerator PlayVideo(VideoClip vid, double start = 0, double end = 0)
     {
         videoPlayer.clip = vid;
+        if (start < 0) start = 0;
         videoPlayer.time = start;
         if (end == 0)
         {
             end = vid.length;
         }
+        videoPlayer.Play();
         yield return new WaitForSeconds((float) (end - start));
 
         PlayNextVideo();

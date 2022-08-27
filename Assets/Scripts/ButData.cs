@@ -5,13 +5,13 @@ using UnityEngine;
 public class ButData : MonoBehaviour
 {
 
-    public GraphCTRL.Node node;
-    public GraphCTRL graph;
+    public GraphCTRL_AG.Node node;
+    public GraphCTRL_AG graph;
     
     // Start is called before the first frame update
     void Start()
     {
-        graph = GameObject.Find("RightPanel").GetComponent<GraphCTRL>();
+        graph = GameObject.Find("RightPanel").GetComponent<GraphCTRL_AG>();
     }
 
     void CreateVideo()
