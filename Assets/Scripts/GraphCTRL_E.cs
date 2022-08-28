@@ -21,7 +21,7 @@ public class GraphCTRL_E : MonoBehaviour
     Graph graph;
     private GameObject eButton, eButton2, iButton, iButton2, aButton, aButton2, TestB;
     public GameObject panel;
-    public GameObject preview, instantiatedPreview, WristScreen, GraphScreen;
+    public GameObject preview, instantiatedPreview, WristScreen, GraphScreen, pauseButton;
     public Material lineMaterial;
     private GameObject line, lineDiag;
     private Vector3 Elast, Enow, Enext, Ilast, Inow, Inext, Alast, Anow, Anext;
@@ -35,6 +35,7 @@ public class GraphCTRL_E : MonoBehaviour
     int x = 0;
     int drawCount = 0;
     int eCount, iCount, aCount = 0;
+    private bool isPlaying = true;
 
     // Start is called before the first frame update
     void Start()
@@ -62,35 +63,41 @@ public class GraphCTRL_E : MonoBehaviour
         GraphScreen = Resources.Load("GraphScreen") as GameObject;
         //Make graph, declare set vectors for buttons, add nodes to graph (these will later be defined by the user study task)
         graph = new Graph();
-        Enow = new Vector3(-250, 0, 0); Enext = new Vector3(250, 0, 0);
+        Enow = new Vector3(-333, 0, 0); Enext = new Vector3(250, 0, 0);
         eVidLeftPos = new Vector3(-1000,0,0); eVidRightPos = new Vector3(1000, 0, 0);
         iVidLeftPos = Inow - new Vector3(1000, 0, 0); iVidRightPos = Inow + new Vector3(1000, 0, 0);
         aVidLeftPos = Anow - new Vector3(1000, 0, 0); aVidRightPos = Anow + new Vector3(1000, 0, 0);
 
         MakeNodes();
         MakeScreens();
-        Debug.Log(" aNodes: " + graph.aNodes.Count + " iNodes: " + graph.iNodes.Count + " eNodes: " + graph.eNodes.Count);
         Build();
 
-        WristScreen.GetComponent<VideoPlayer>().clip = iClips[iCount];
+        //WristScreen.GetComponent<VideoPlayer>().clip = iClips[iCount];
     }
 
     // Update is called once per frame
     void Update()
     {
-        if (Input.GetKeyDown(KeyCode.RightArrow) && x < 1)
+        if (Input.GetKeyDown(KeyCode.RightArrow))
         {
-            
             Next();
-            
-            //WristScreen.GetComponent<VideoPlayer>().clip = aClips[aCount];
-            //aVidLeft.GetComponent<VideoPlayer>().clip = aClips[aCount];
-            x++;
-
         }
-        if (Input.GetKeyDown(KeyCode.UpArrow))
+        if (Input.GetKeyDown(KeyCode.Space))
         {
-            x = 0;
+            Pause();
+        }
+        if (Input.GetKeyDown(KeyCode.LeftArrow))
+        {
+            Prev();
+        }
+        if (eVidLeft.GetComponent<VideoPlayer>().isPlaying)
+        {
+            pauseButton.GetComponentInChildren<TMPro.TextMeshPro>().text = "Pause";
+        }
+        else
+        {
+            pauseButton.GetComponentInChildren<TMPro.TextMeshPro>().text = "Play";
+
         }
     }
 
@@ -129,12 +136,35 @@ public class GraphCTRL_E : MonoBehaviour
             }
             Debug.Log("E SWITCH");
             GameObject.Find("eArrow").GetComponent<Image>().color = Color.white;
-
         }
         GameObject.Find("eArrow").GetComponent<Image>().color = Color.white;
         Build();
         MakeScreens();
         Debug.Log("End of next");
+    }
+
+    public void Prev()
+    {
+        if (eCount == 0)
+        {
+            return;
+        }
+        else
+        {
+            if (GameObject.Find("GraphScreen(Clone)"))
+            {
+                GameObject[] screens = GameObject.FindGameObjectsWithTag("GraphScreen");
+                foreach (var tv in screens)
+                {
+                    Destroy(tv);
+                }
+            }
+            eCount--;
+            graph.eNodes[eCount].Position = Enow;
+            graph.eNodes[eCount + 1].Position = Enext;
+        }
+        Build();
+        MakeScreens();
     }
 
     //Clears graph button game objects then draws the new current node and past/future nodes if applicable
@@ -143,8 +173,6 @@ public class GraphCTRL_E : MonoBehaviour
         ClearNodes();
         DrawNode(graph.eNodes[eCount]);
         if (graph.eNodes.Count > eCount + 1) { DrawNode(graph.eNodes[eCount + 1]); }
-        /*if (aCount > 0) { DrawNode(graph.aNodes[aCount - 1]); }
-        if (iCount > 0) { DrawNode(graph.iNodes[iCount - 1]); }*/
     }
 
     //Tagged the prefab buttons with "GraphButton" tag. This finds them and deltes them so new ones can be added
@@ -176,9 +204,6 @@ public class GraphCTRL_E : MonoBehaviour
        
         but.GetComponent<Transform>().localPosition = panel.transform.position + node.Position + new Vector3(0,0,-20);
         if (node.Name!=null) { but.GetComponentInChildren<TMPro.TextMeshPro>().text = node.Name; }
-
-        //but.GetComponent<MeshRenderer>().material.SetColor("_Color", node.NodeColor);
-        //Debug.Log("Drawing");
     }
 
     //Assigns the appropriate clip to the node/button passed in. Defines where the clip should be shown.
@@ -186,7 +211,6 @@ public class GraphCTRL_E : MonoBehaviour
     {
         DestroyVid();
         StopAllCoroutines();
-        //Debug.Log("Instantiate Video");
         Vector3 instantiatePoint = panel.transform.position;
         instantiatePoint.y = node.Position.y;
         instantiatePoint.x = instantiatePoint.x - 1000;
@@ -234,7 +258,7 @@ public class GraphCTRL_E : MonoBehaviour
         concat = eVidRight.GetComponent<ConcatVideos>();
         if(eClips.Count > eCount + 1)
         {
-            concat.PlayBackToBack(eClips[eCount], eClips[eCount + 1], 3.0, 3.0);
+            concat.PlayBackToBack(eClips[eCount], eClips[eCount + 1], 5.0, 5.0);
         }
         //ConcatVideos.PlayBackToBack(aClips[0], aClips[1], 3.0, 3.0);
         //ConcatVideos.videoPlayer = aVidRight.GetComponent<VideoPlayer>();
@@ -242,10 +266,22 @@ public class GraphCTRL_E : MonoBehaviour
         //VideoClip clip = ConcatVideos.PlayBackToBack(aClips[0], aClips[1], 3.0, 3.0);
     }
 
+    public void Pause()
+    {
+        if(eVidLeft.GetComponent<VideoPlayer>().isPlaying)
+        {
+            eVidLeft.GetComponent<VideoPlayer>().Pause();
+        }
+        else 
+        { 
+            eVidLeft.GetComponent<VideoPlayer>().Play(); 
+        }
+    }
+
     private void MakeNodes()
     {
         //5 events
-        var e0 = new Node() { Position = Enow, Name = "Base" }; var e1 = new Node() { Position = Enext, Name = "Printer" }; var e2 = new Node() { Name = "Stand" }; var e3 = new Node() { Name = "Arm" }; var e4 = new Node() { Name = "Head" };
+        var e0 = new Node() { Position = Enow, Name = "Base" }; var e1 = new Node() { Position = Enext, Name = "Printer" }; var e2 = new Node() { Name = "Stand" }; var e3 = new Node() { Name = "Arm" }; var e4 = new Node() { Name = "Mount" };
 
         graph.eNodes.Add(e0); graph.eNodes.Add(e1); graph.eNodes.Add(e2); graph.eNodes.Add(e3); graph.eNodes.Add(e4);
  

@@ -64,12 +64,10 @@ public class GraphCTRL_I : MonoBehaviour
         GraphImage = Resources.Load("GraphImage") as GameObject;
         //Make graph, declare set vectors for buttons, add nodes to graph (these will later be defined by the user study task)
         graph = new Graph();
-        Enow = new Vector3(0, 205, 0); 
-        Ilast = new Vector3(-400, -320, 0); Inow = new Vector3(0, -320, 0); Inext = new Vector3(400, -320, 0);
-        Alast = new Vector3(-400, -432, 0); Anow = new Vector3(0, -432, 0); Anext = new Vector3(400, -432, 0);
-        eVidLeftPos = Enow - new Vector3(1000,0,0); eVidRightPos = Enow + new Vector3(1000, 0, 0);
-        iVidLeftPos = Inow - new Vector3(1000, 0, 0); iVidRightPos = Inow + new Vector3(1000, 0, 0);
-        aVidLeftPos = Anow - new Vector3(1000, 0, 0); aVidRightPos = Anow + new Vector3(1000, 0, 0);
+        Enow = new Vector3(-240, 250, 0);
+        Ilast = new Vector3(-400, -320, 0); Inow = new Vector3(-282, -320, 0); Inext = new Vector3(300, -320, 0);
+        eVidLeftPos = Enow - new Vector3(719, 0,0); eVidRightPos = Enow + new Vector3(1300, 0, 0);
+        iVidLeftPos = Inow - new Vector3(719, 0, 0); iVidRightPos = Inow + new Vector3(1300, 0, 0);
         //Pnow = new Vector3(-300, -998, 0);
         //Pnext = new Vector3(300, -998, 0);
         eVidRight = Instantiate(GraphImage, panel.transform, false);
@@ -83,20 +81,15 @@ public class GraphCTRL_I : MonoBehaviour
         GameObject.Find("LineDiag2Top").GetComponent<Image>().enabled = false;
         GameObject.Find("LineDownNext").GetComponent<Image>().enabled = false;
         GameObject.Find("LineDownPrev").GetComponent<Image>().enabled = false;*/
-        WristScreen.GetComponent<VideoPlayer>().clip = iClips[iCount];
+        //WristScreen.GetComponent<VideoPlayer>().clip = iClips[iCount];
     }
 
     // Update is called once per frame
     void Update()
     {
-        if (Input.GetKeyDown(KeyCode.RightArrow) && x < 1)
+        if (Input.GetKeyDown(KeyCode.RightArrow))
         {           
             Next();
-            x++;
-        }
-        if (Input.GetKeyDown(KeyCode.UpArrow))
-        {
-            x = 0;
         }
     }
 
@@ -291,34 +284,28 @@ public class GraphCTRL_I : MonoBehaviour
         concat = iVidRight.GetComponent<ConcatVideos>();
         if(iClips.Count > iCount + 1)
         {
-            concat.PlayBackToBack(iClips[iCount], iClips[iCount + 1], 3.0, 3.0);
+            concat.PlayBackToBack(iClips[iCount], iClips[iCount + 1], 5.0, 5.0);
         }
         eVidRight.GetComponentInChildren<Image>().sprite = eImages[eCount];
-
-        //ConcatVideos.PlayBackToBack(aClips[0], aClips[1], 3.0, 3.0);
-        //ConcatVideos.videoPlayer = aVidRight.GetComponent<VideoPlayer>();
-        //aVidRight.GetComponent<VideoPlayer>().clip = ConcatVideos.PlayBackToBack(aClips[0], aClips[1], 3.0, 3.0);
-        //VideoClip clip = ConcatVideos.PlayBackToBack(aClips[0], aClips[1], 3.0, 3.0);
     }
 
     private void MakeNodes()
     {
         //5 events
-        var e0 = new Node() { Position = Enow, Name = "Base" }; var e1 = new Node() { Name = "Printer" }; var e2 = new Node() { Name = "Stand" }; var e3 = new Node() { Name = "Arm" }; var e4 = new Node() { Name = "Head" };
+        var e0 = new Node() { Position = Enow, Name = "Base" }; var e1 = new Node() { Name = "Printer" }; var e2 = new Node() { Name = "Stand" }; var e3 = new Node() { Name = "Arm" }; var e4 = new Node() { Name = "Mount" };
         //Event 0 has 5 interactions
-        var i0 = new Node() { Position = Inow, Parent = e0, Name = "Move" }; var i1 = new Node() { Position = Inext, Parent = e0 }; var i2 = new Node() { Parent = e0 }; var i3 = new Node() { Parent = e0 }; var i4 = new Node() { Parent = e0 };
+        var i0 = new Node() { Position = Inow, Parent = e0, Name = "Move base to desk" }; var i1 = new Node() { Position = Inext, Parent = e0, Name = "Fix to desk w clamp A" }; var i2 = new Node() { Parent = e0, Name = "Fix to desk w clamp B" }; var i3 = new Node() { Parent = e0, Name = "Hammer to test" };
         //Event 1 has 8 interactions
-        var i5 = new Node() { Parent = e1, Name = "Rotate" }; var i6 = new Node() { Parent = e1 }; var i7 = new Node() { Parent = e1 }; var i8 = new Node() { Parent = e1 }; var i9 = new Node() { Parent = e1 }; var i10 = new Node() { Parent = e1 }; var i11 = new Node() { Parent = e1 }; var i12 = new Node() { Parent = e1 };
+        var i5 = new Node() { Parent = e1, Name = "Turn printer around" }; var i6 = new Node() { Parent = e1, Name = "Attach roll 1" }; var i7 = new Node() { Parent = e1, Name = "Attach roll 2" }; var i8 = new Node() { Parent = e1, Name = "Attach roll 3" }; var i9 = new Node() { Parent = e1, Name = "Turn printer back" }; var i10 = new Node() { Parent = e1, Name = "Insert thumb drive" }; var i11 = new Node() { Parent = e1, Name = "Turn on printer" }; var i12 = new Node() { Parent = e1, Name = "Print the ruler" };
         //Event 2 has 4 interactions
-        var i13 = new Node() { Parent = e2 }; var i14 = new Node() { Parent = e2 }; var i15 = new Node() { Parent = e2, Name = "Screw" }; var i16 = new Node() { Parent = e2 };
+        var i13 = new Node() { Parent = e2, Name = "Mark 1 ft. from left" }; var i14 = new Node() { Parent = e2, Name = "Move screw nuts" }; var i15 = new Node() { Parent = e2, Name = "Align holes" }; var i16 = new Node() { Parent = e2, Name = "Fasten screws" };
         //Event 3 has 3 interactions
-        var i17 = new Node() { Parent = e3 }; var i18 = new Node() { Parent = e3, Name = "Slide" }; var i19 = new Node() { Parent = e3 };
+        var i17 = new Node() { Parent = e3, Name = "Mark 1 ft. from top" }; var i18 = new Node() { Parent = e3, Name = "Slide arm in" }; var i19 = new Node() { Parent = e3, Name = "Fasten screws" };
         //Event 4 has 6 interactions
-        var i20 = new Node() { Parent = e4, Name = "Mark" }; var i21 = new Node() { Parent = e4 }; var i22 = new Node() { Parent = e4 }; var i23 = new Node() { Parent = e4 }; var i24 = new Node() { Parent = e4 }; var i25 = new Node() { Parent = e4 };
-        
+        var i20 = new Node() { Parent = e4, Name = "Slide mount onto arm" }; var i21 = new Node() { Parent = e4, Name = "Fix mount w screwdriver" }; var i22 = new Node() { Parent = e4, Name = "Align cardboard" }; var i23 = new Node() { Parent = e4, Name = "Drill holes" }; var i24 = new Node() { Parent = e4, Name = "Fix plate with wrench" }; var i25 = new Node() { Parent = e4, Name = "Tape on camera" };
 
         graph.eNodes.Add(e0); graph.eNodes.Add(e1); graph.eNodes.Add(e2); graph.eNodes.Add(e3); graph.eNodes.Add(e4);
-        graph.iNodes.Add(i0); graph.iNodes.Add(i1); graph.iNodes.Add(i2); graph.iNodes.Add(i3); graph.iNodes.Add(i4); graph.iNodes.Add(i5); graph.iNodes.Add(i6); graph.iNodes.Add(i7); graph.iNodes.Add(i8); graph.iNodes.Add(i9); graph.iNodes.Add(i10); graph.iNodes.Add(i11); graph.iNodes.Add(i12); graph.iNodes.Add(i13); graph.iNodes.Add(i14); graph.iNodes.Add(i15); graph.iNodes.Add(i16); 
+        graph.iNodes.Add(i0); graph.iNodes.Add(i1); graph.iNodes.Add(i2); graph.iNodes.Add(i3); graph.iNodes.Add(i5); graph.iNodes.Add(i6); graph.iNodes.Add(i7); graph.iNodes.Add(i8); graph.iNodes.Add(i9); graph.iNodes.Add(i10); graph.iNodes.Add(i11); graph.iNodes.Add(i12); graph.iNodes.Add(i13); graph.iNodes.Add(i14); graph.iNodes.Add(i15); graph.iNodes.Add(i16); 
         graph.iNodes.Add(i17); graph.iNodes.Add(i18); graph.iNodes.Add(i19); graph.iNodes.Add(i20); graph.iNodes.Add(i21); graph.iNodes.Add(i22); graph.iNodes.Add(i23); graph.iNodes.Add(i24); graph.iNodes.Add(i25);
 
     }

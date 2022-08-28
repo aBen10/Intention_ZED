@@ -24,6 +24,7 @@ public class ControlCTRL : MonoBehaviour
     public VideoPlayer vp;
     int x = 0;
     int eCount = 0;
+    private bool isPlaying = true;
 
     // Start is called before the first frame update
     void Start()
@@ -36,14 +37,13 @@ public class ControlCTRL : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-        if (Input.GetKeyDown(KeyCode.RightArrow) && x < 1)
+        if (Input.GetKeyDown(KeyCode.RightArrow))
         {   
             Next();
-            x++;
         }
-        if (Input.GetKeyDown(KeyCode.UpArrow))
+        if (Input.GetKeyDown(KeyCode.Space))
         {
-            x = 0;
+            Pause();
         }
     }
 
@@ -62,6 +62,33 @@ public class ControlCTRL : MonoBehaviour
         }
         vp.clip = eClips[eCount];
         Debug.Log("End of next");
+    }
+
+    public void Prev()
+    {
+        if (eCount == 0)
+        {
+            return;
+        }
+        else
+        {
+            eCount--;
+        }
+        vp.clip = eClips[eCount];
+    }
+
+    public void Pause()
+    {
+        if (isPlaying)
+        {
+            vp.Pause();
+            isPlaying = false;
+        }
+        else
+        {
+            vp.Play();
+            isPlaying = true;
+        }
     }
 
     public class Graph
