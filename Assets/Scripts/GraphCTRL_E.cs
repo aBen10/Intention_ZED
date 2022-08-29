@@ -30,6 +30,8 @@ public class GraphCTRL_E : MonoBehaviour
     public List<VideoClip> aClips = new List<VideoClip>();
     public List<VideoClip> eClips = new List<VideoClip>();
     public List<VideoClip> iClips = new List<VideoClip>();
+    public GameObject eArrow;
+    public GameObject eArrow2;
     ConcatVideos concat;
     int count = 0;
     int x = 0;
@@ -61,10 +63,12 @@ public class GraphCTRL_E : MonoBehaviour
         lineDiag = Resources.Load("LineDiag") as GameObject;
         preview = Resources.Load("ButtonScreen") as GameObject;
         GraphScreen = Resources.Load("GraphScreen") as GameObject;
+        eArrow = GameObject.Find("eArrow"); 
+        eArrow2 = GameObject.Find("eArrow2");
         //Make graph, declare set vectors for buttons, add nodes to graph (these will later be defined by the user study task)
         graph = new Graph();
         Enow = new Vector3(-333, 0, 0); Enext = new Vector3(250, 0, 0);
-        eVidLeftPos = new Vector3(-1000,0,0); eVidRightPos = new Vector3(1000, 0, 0);
+        eVidLeftPos = new Vector3(-1080,0,0); eVidRightPos = new Vector3(1080, 0, 0);
         iVidLeftPos = Inow - new Vector3(1000, 0, 0); iVidRightPos = Inow + new Vector3(1000, 0, 0);
         aVidLeftPos = Anow - new Vector3(1000, 0, 0); aVidRightPos = Anow + new Vector3(1000, 0, 0);
 
@@ -90,7 +94,21 @@ public class GraphCTRL_E : MonoBehaviour
         {
             Prev();
         }
-        if (eVidLeft.GetComponent<VideoPlayer>().isPlaying)
+        if (Input.GetKey(KeyCode.DownArrow))
+        {
+            if (eVidLeft.GetComponent<VideoPlayer>().frame > 30)
+            {
+                eVidLeft.GetComponent<VideoPlayer>().frame = eVidLeft.GetComponent<VideoPlayer>().frame - 30;
+            }
+        }
+        if (Input.GetKey(KeyCode.UpArrow))
+        {
+            if (eVidLeft.GetComponent<VideoPlayer>().frame < (long)eVidLeft.GetComponent<VideoPlayer>().clip.frameCount - 20)
+            {
+                eVidLeft.GetComponent<VideoPlayer>().frame = eVidLeft.GetComponent<VideoPlayer>().frame + 20;
+            }
+        }
+        if (eVidLeft != null && eVidLeft.GetComponent<VideoPlayer>().isPlaying)
         {
             pauseButton.GetComponentInChildren<TMPro.TextMeshPro>().text = "Pause";
         }
@@ -130,14 +148,19 @@ public class GraphCTRL_E : MonoBehaviour
             eCount++;
             graph.eNodes[eCount].Position = Enow;
             graph.eNodes[eCount - 1].Position = Elast;
-            if(graph.eNodes.Count + 1 > eCount)
+            if (graph.eNodes.Count ==  eCount + 1)
+            {
+                eArrow.SetActive(false);
+                eArrow2.SetActive(false);
+            }
+            if (graph.eNodes.Count > eCount + 1)
             {
                 graph.eNodes[eCount+1].Position = Enext;
             }
             Debug.Log("E SWITCH");
-            GameObject.Find("eArrow").GetComponent<Image>().color = Color.white;
+            //GameObject.Find("eArrow").GetComponent<Image>().color = Color.white;
         }
-        GameObject.Find("eArrow").GetComponent<Image>().color = Color.white;
+        //GameObject.Find("eArrow").GetComponent<Image>().color = Color.white;
         Build();
         MakeScreens();
         Debug.Log("End of next");
@@ -163,6 +186,8 @@ public class GraphCTRL_E : MonoBehaviour
             graph.eNodes[eCount].Position = Enow;
             graph.eNodes[eCount + 1].Position = Enext;
         }
+        eArrow.SetActive(true);
+        eArrow2.SetActive(true);
         Build();
         MakeScreens();
     }
@@ -252,13 +277,16 @@ public class GraphCTRL_E : MonoBehaviour
         eVidLeft.GetComponent<VideoPlayer>().clip = eClips[eCount];
         eVidLeft.GetComponent<Transform>().localPosition = eVidLeftPos;
 
-        eVidRight = Instantiate(GraphScreen, panel.transform, false);
-        // aVidRight.GetComponent<VideoPlayer>().clip = aClips[0];
-        eVidRight.GetComponent<Transform>().localPosition = eVidRightPos;
-        concat = eVidRight.GetComponent<ConcatVideos>();
-        if(eClips.Count > eCount + 1)
+        if (graph.eNodes.Count > eCount + 1)
         {
-            concat.PlayBackToBack(eClips[eCount], eClips[eCount + 1], 5.0, 5.0);
+            eVidRight = Instantiate(GraphScreen, panel.transform, false);
+            // aVidRight.GetComponent<VideoPlayer>().clip = aClips[0];
+            eVidRight.GetComponent<Transform>().localPosition = eVidRightPos;
+            concat = eVidRight.GetComponent<ConcatVideos>();
+            if (eClips.Count > eCount + 1)
+            {
+                concat.PlayBackToBack(eClips[eCount], eClips[eCount + 1], 5.0, 5.0);
+            }
         }
         //ConcatVideos.PlayBackToBack(aClips[0], aClips[1], 3.0, 3.0);
         //ConcatVideos.videoPlayer = aVidRight.GetComponent<VideoPlayer>();

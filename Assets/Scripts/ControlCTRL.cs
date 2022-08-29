@@ -19,7 +19,7 @@ public class ControlCTRL : MonoBehaviour
 {
 
     Graph graph;
-    public GameObject panel;
+    public GameObject panel, pauseButton;
     public List<VideoClip> eClips = new List<VideoClip>();
     public VideoPlayer vp;
     int x = 0;
@@ -29,7 +29,7 @@ public class ControlCTRL : MonoBehaviour
     // Start is called before the first frame update
     void Start()
     {
-        eClips.AddRange(Resources.LoadAll<VideoClip>("iClips"));
+        eClips.AddRange(Resources.LoadAll<VideoClip>("eClips"));
         graph = new Graph();
         vp.clip = eClips[eCount];
     }
@@ -44,6 +44,33 @@ public class ControlCTRL : MonoBehaviour
         if (Input.GetKeyDown(KeyCode.Space))
         {
             Pause();
+        }
+        if (Input.GetKeyDown(KeyCode.LeftArrow))
+        {
+            Prev();
+        }
+        if (Input.GetKey(KeyCode.DownArrow))
+        {
+            if (vp.frame > 30)
+            {
+                vp.frame = vp.frame - 30;
+            }
+        }
+        if (Input.GetKey(KeyCode.UpArrow))
+        {
+            if (vp.frame < (long) vp.clip.frameCount - 20)
+            {
+                vp.frame = vp.frame + 20;
+            }
+        }
+        if (vp.isPlaying)
+        {
+            pauseButton.GetComponentInChildren<TMPro.TextMeshPro>().text = "Pause";
+        }
+        else
+        {
+            pauseButton.GetComponentInChildren<TMPro.TextMeshPro>().text = "Play";
+
         }
     }
 
@@ -68,6 +95,7 @@ public class ControlCTRL : MonoBehaviour
     {
         if (eCount == 0)
         {
+            vp.frame = 0;
             return;
         }
         else
