@@ -45,18 +45,11 @@ public class GraphCTRL_AG : MonoBehaviour
     void Start()
     {
         //Loads clips from Resources folder into list
-        aClips.AddRange(Resources.LoadAll<VideoClip>("aClips"));
         iClips.AddRange(Resources.LoadAll<VideoClip>("iClips"));
-        eClips.AddRange(Resources.LoadAll<VideoClip>("eClips"));
         eImages.AddRange(Resources.LoadAll<Sprite>("eImages"));
-        iImages.AddRange(Resources.LoadAll<Sprite>("iImages"));
         aImages.AddRange(Resources.LoadAll<Sprite>("aImages"));
-        /*        Debug.Log(aClips.Count);
-                Debug.Log(aClips[0]);
-                Debug.Log(iClips.Count);
-                Debug.Log(iClips[0]);
-                Debug.Log(eClips.Count);
-                Debug.Log(eClips[0]);*/
+        Debug.Log(iClips.Count);
+        Debug.Log(iClips[0]);
         //load button and lineprefabs from Resources folder
         iButton = Resources.Load("iButton") as GameObject;
         iButton2 = Resources.Load("iButton2") as GameObject;
@@ -71,18 +64,12 @@ public class GraphCTRL_AG : MonoBehaviour
         //Make graph, declare set vectors for buttons, add nodes to graph (these will later be defined by the user study task)
         graph = new Graph();
         Enow = new Vector3(-282, 470, 0); 
-        Ilast = new Vector3(-400, 134, 0); Inow = new Vector3(-282, -90, 0); Inext = new Vector3(400, 134, 0);
+        Ilast = new Vector3(-400, 134, 0); Inow = new Vector3(-282, -90, 0); Inext = new Vector3(528, 122, 0);
         Alast = new Vector3(-400, -432, 0); Anow = new Vector3(-282, -650, 0); Anext = new Vector3(528, -432, 0);
         eVidLeftPos = Enow - new Vector3(719,0,0); eVidRightPos = Enow + new Vector3(1300, 0, 0);
-        iVidLeftPos = Inow - new Vector3(719, 0, 0); iVidRightPos = Inow + new Vector3(1300, 0, 0);
+        iVidLeftPos = Inow - new Vector3(719, 0, 30); iVidRightPos = Inow + new Vector3(1300, 0, -30);
         aVidLeftPos = Anow - new Vector3(719, 0, 0); aVidRightPos = Anow + new Vector3(1300, 0, 0);
-        //Pnow = new Vector3(-300, -998, 0);
-        //Pnext = new Vector3(300, -998, 0);
-        Debug.Log(iVidRightPos);
-        iVidRight = Instantiate(GraphImage, panel.transform, false);
-        Debug.Log(iVidRight.transform.position);
-        iVidRight.transform.localPosition = iVidRightPos;
-        Debug.Log(iVidRight.transform.position);
+
         eVidRight = Instantiate(GraphImage, panel.transform, false);
         eVidRight.transform.localPosition = eVidRightPos;
         aVidLeft = Instantiate(GraphImage, panel.transform, false);
@@ -99,20 +86,29 @@ public class GraphCTRL_AG : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-        if (Input.GetKeyDown(KeyCode.RightArrow) && x < 1)
+        if (Input.GetKeyDown(KeyCode.RightArrow))
         {
-            
             Next();
-            
-            //WristScreen.GetComponent<VideoPlayer>().clip = aClips[aCount];
-            //aVidLeft.GetComponent<VideoPlayer>().clip = aClips[aCount];
-            x++;
-
         }
-        if (Input.GetKeyDown(KeyCode.UpArrow))
+        if (Input.GetKeyDown(KeyCode.LeftArrow))
         {
-            x = 0;
+            Prev();
         }
+        if (Input.GetKey(KeyCode.DownArrow))
+        {
+            if (iVidLeft.GetComponent<VideoPlayer>().frame > 30)
+            {
+                iVidLeft.GetComponent<VideoPlayer>().frame = iVidLeft.GetComponent<VideoPlayer>().frame - 30;
+            }
+        }
+        if (Input.GetKey(KeyCode.UpArrow))
+        {
+            if (iVidLeft.GetComponent<VideoPlayer>().frame < (long)iVidLeft.GetComponent<VideoPlayer>().clip.frameCount - 20)
+            {
+                iVidLeft.GetComponent<VideoPlayer>().frame = iVidLeft.GetComponent<VideoPlayer>().frame + 20;
+            }
+        }
+        
     }
 
     /*transitions to next affordance/gesutre (A/G). aCount, iCount, and eCount keep track of current A/G and thier parents. This code uses checks on parents
@@ -124,6 +120,9 @@ public class GraphCTRL_AG : MonoBehaviour
     {
         Debug.Log("Next");
         GameObject.Find("LineDiag").GetComponent<Image>().enabled = true;
+        GameObject.Find("LineDiagTop").GetComponent<Image>().enabled = true;
+        GameObject.Find("iArrow").GetComponent<Image>().enabled = true;
+
         if (GameObject.Find("GraphScreen(Clone)"))
         {
             GameObject[] screens = GameObject.FindGameObjectsWithTag("GraphScreen");
@@ -160,7 +159,7 @@ public class GraphCTRL_AG : MonoBehaviour
             {
                 Debug.Log("E SWITCH UP NEXT");
                 //GameObject.Find("LineDiag2").GetComponent<Image>().enabled = true;
-                //GameObject.Find("LineDiagTop").GetComponent<Image>().enabled = false;
+                GameObject.Find("LineDiagTop").GetComponent<Image>().enabled = false;
                 //GameObject.Find("LineDownPrev").GetComponent<Image>().enabled = false;
                 //GameObject.Find("LineDownNext").GetComponent<Image>().enabled = true;
                 GameObject.Find("aArrow").GetComponent<Image>().enabled = false;
@@ -203,7 +202,7 @@ public class GraphCTRL_AG : MonoBehaviour
             if(graph.iNodes.Count > iCount + 1 && graph.iNodes[iCount].Parent != graph.iNodes[iCount + 1].Parent)
             {
                 GameObject.Find("iArrow").GetComponent<Image>().enabled = false;
-                //GameObject.Find("LineDiagTop").GetComponent<Image>().enabled = false;
+                GameObject.Find("LineDiagTop").GetComponent<Image>().enabled = false;
             }
             
         }
@@ -224,7 +223,7 @@ public class GraphCTRL_AG : MonoBehaviour
             Debug.Log("E SWITCH");
             //GameObject.Find("LineDiag2").GetComponent<Image>().enabled = false;
             GameObject.Find("LineDiag").GetComponent<Image>().enabled = false;
-            //GameObject.Find("LineDiagTop").GetComponent<Image>().enabled = true;
+            GameObject.Find("LineDiagTop").GetComponent<Image>().enabled = true;
             //GameObject.Find("LineDownPrev").GetComponent<Image>().enabled = false;
             //GameObject.Find("LineDownNext").GetComponent<Image>().enabled = true;
             //GameObject.Find("LineDiag2Top").GetComponent<Image>().enabled = false;
@@ -252,6 +251,44 @@ public class GraphCTRL_AG : MonoBehaviour
         Build();
         MakeScreens();
         Debug.Log("End of next");
+        Debug.Log("iCount: " + iCount + "\naCount: " + aCount);
+    }
+
+    public void Prev()
+    {
+        if (aCount == 0)
+        {
+            return;
+        }
+        else
+        {
+            if (GameObject.Find("GraphScreen(Clone)"))
+            {
+                GameObject[] screens = GameObject.FindGameObjectsWithTag("GraphScreen");
+                foreach (var tv in screens)
+                {
+                    Destroy(tv);
+                }
+            }
+            aCount--;
+            graph.aNodes[aCount].Position = Anow;
+            graph.aNodes[aCount + 1].Position = Anext;
+            if (iCount != 0 && graph.aNodes[aCount].Parent != graph.aNodes[aCount + 1].Parent)
+            {
+                iCount--;
+                graph.iNodes[iCount].Position = Inow;
+                graph.iNodes[iCount+1].Position = Inext;
+                if (eCount != 0 && graph.iNodes[iCount].Parent != graph.iNodes[iCount + 1].Parent)
+                {
+                    eCount--;
+                    graph.eNodes[eCount].Position = Enow;
+                }
+            }
+        }
+        GameObject.Find("iArrow").GetComponent<Image>().enabled = true;
+        GameObject.Find("LineDiagTop").GetComponent<Image>().enabled = true;
+        Build();
+        MakeScreens();
     }
 
     //Clears graph button game objects then draws the new current node and past/future nodes if applicable
@@ -261,7 +298,7 @@ public class GraphCTRL_AG : MonoBehaviour
         DrawNode(graph.eNodes[eCount]);
         DrawNode(graph.iNodes[iCount]);
         DrawNode(graph.aNodes[aCount]);
-        //if (graph.iNodes.Count > iCount + 1) {DrawNode(graph.iNodes[iCount + 1]);}
+        if (graph.iNodes.Count > iCount + 1) {DrawNode(graph.iNodes[iCount + 1]);}
         if (graph.aNodes.Count > aCount + 1 && graph.aNodes[aCount].Parent == graph.aNodes[aCount+1].Parent) 
         { 
             DrawNode(graph.aNodes[aCount + 1]); 
@@ -335,8 +372,6 @@ public class GraphCTRL_AG : MonoBehaviour
             //but.GetComponentInChildren<TextMeshPro>().text = "test";
 
         }
-        ButData data = but.GetComponent<ButData>();
-        data.node = node;
         but.GetComponent<Transform>().localPosition = panel.transform.position + node.Position + new Vector3(0,0,-20);
         if (node.Name!=null) { but.GetComponentInChildren<TMPro.TextMeshPro>().text = node.Name; }
 
@@ -387,34 +422,30 @@ public class GraphCTRL_AG : MonoBehaviour
 
     private void MakeScreens()
     {
-        /*aVidLeft = Instantiate(GraphScreen, panel.transform, false);
-        aVidLeft.GetComponent<VideoPlayer>().clip = aClips[aCount];
-        aVidLeft.GetComponent<Transform>().localPosition = aVidLeftPos;
+        iVidLeft = Instantiate(GraphScreen, panel.transform, false);
+        iVidLeft.GetComponent<VideoPlayer>().clip = iClips[iCount];
+        iVidLeft.GetComponent<Transform>().localPosition = iVidLeftPos;
 
-        aVidRight = Instantiate(GraphScreen, panel.transform, false);
-        // aVidRight.GetComponent<VideoPlayer>().clip = aClips[0];
-        aVidRight.GetComponent<Transform>().localPosition = aVidRightPos;
-        concat = aVidRight.GetComponent<ConcatVideos>();
-        if(aClips.Count > aCount + 1)
+        iVidRight = Instantiate(GraphScreen, panel.transform, false);
+        //iVidRight.GetComponent<VideoPlayer>().clip = iClips[0];
+        iVidRight.GetComponent<Transform>().localPosition = iVidRightPos;
+        concat = iVidRight.GetComponent<ConcatVideos>();
+        if(iClips.Count > iCount + 1)
         {
-            concat.PlayBackToBack(aClips[aCount], aClips[aCount + 1], 3.0, 3.0);
-        }*/
-        iVidRight.GetComponentInChildren<Image>().sprite = iImages[iCount];
+            concat.PlayBackToBack(iClips[iCount], iClips[iCount + 1], 4.0, 4.0);
+        }
         eVidRight.GetComponentInChildren<Image>().sprite = eImages[eCount];
-        if (aClips.Count > aCount + 1 && graph.aNodes[aCount].Parent == graph.aNodes[aCount+1].Parent)
+        
+        if (aImages.Count > aCount + 1 && graph.aNodes[aCount].Parent == graph.aNodes[aCount+1].Parent)
         {
             aVidRight.GetComponentInChildren<Image>().sprite = aImages[aCount+1];
         }
-        else if(aClips.Count > aCount + 1)
+        else if(aImages.Count > aCount + 1)
         {
             aVidRight.GetComponentInChildren<Image>().sprite = dne;
             GameObject.Find("LineDiag").GetComponent<Image>().enabled = false;
         }
         aVidLeft.GetComponentInChildren<Image>().sprite = aImages[aCount];
-        //ConcatVideos.PlayBackToBack(aClips[0], aClips[1], 3.0, 3.0);
-        //ConcatVideos.videoPlayer = aVidRight.GetComponent<VideoPlayer>();
-        //aVidRight.GetComponent<VideoPlayer>().clip = ConcatVideos.PlayBackToBack(aClips[0], aClips[1], 3.0, 3.0);
-        //VideoClip clip = ConcatVideos.PlayBackToBack(aClips[0], aClips[1], 3.0, 3.0);
     }
 
     private void MakeNodes()
@@ -424,31 +455,32 @@ public class GraphCTRL_AG : MonoBehaviour
         //Event 0 has 5 interactions
         var i0 = new Node() { Position = Inow, Parent = e0, Name = "Move base to desk" }; var i1 = new Node() { Position = Inext, Parent = e0, Name = "Fix to desk w clamp A" }; var i2 = new Node() { Parent = e0, Name = "Fix to desk w clamp B" }; var i3 = new Node() { Parent = e0, Name = "Hammer to test" };
         //Event 1 has 8 interactions
-        var i5 = new Node() { Parent = e1, Name = "Turn printer around" }; var i6 = new Node() { Parent = e1, Name = "Attach roll 1" }; var i7 = new Node() { Parent = e1, Name = "Attach roll 2" }; var i8 = new Node() { Parent = e1, Name = "Attach roll 3" }; var i9 = new Node() { Parent = e1, Name = "Turn printer back" }; var i10 = new Node() { Parent = e1, Name = "Insert thumb drive" }; var i11 = new Node() { Parent = e1, Name = "Turn on printer" }; var i12 = new Node() { Parent = e1, Name = "Grab the ruler" };
+        var i5 = new Node() { Parent = e1, Name = "Reach back of printer" }; var i6 = new Node() { Parent = e1, Name = "Attach roll 1" }; var i7 = new Node() { Parent = e1, Name = "Attach roll 2" }; var i8 = new Node() { Parent = e1, Name = "Attach roll 3" }; var i9 = new Node() { Parent = e1, Name = "Reach front of printer" }; var i10 = new Node() { Parent = e1, Name = "Insert thumb drive" }; var i11 = new Node() { Parent = e1, Name = "Turn on printer" }; var i12 = new Node() { Parent = e1, Name = "Grab the ruler" };
         //Event 2 has 4 interactions
-        var i13 = new Node() { Parent = e2, Name = "Mark 1 ft. from left" }; var i14 = new Node() { Parent = e2, Name = "Move screw nuts" }; var i15 = new Node() { Parent = e2, Name = "Align holes" }; var i16 = new Node() { Parent = e2, Name = "Fasten screws" };
+        var i13 = new Node() { Parent = e2, Name = "Measure 1ft. in" }; var i26 = new Node() { Parent = e2, Name = "Mark location" }; var i14 = new Node() { Parent = e2, Name = "Move screw nut" }; var i15 = new Node() { Parent = e2, Name = "Align hole" }; var i16 = new Node() { Parent = e2, Name = "Fasten screw" };
         //Event 3 has 3 interactions
-        var i17 = new Node() { Parent = e3, Name = "Mark 1 ft. from top" }; var i18 = new Node() { Parent = e3, Name = "Slide arm in" }; var i19 = new Node() { Parent = e3, Name = "Fasten screws" };
+        var i17 = new Node() { Parent = e3, Name = "Measure 1ft. from top" }; var i27 = new Node() { Parent = e3, Name = "Mark location" }; var i28 = new Node() { Parent = e3, Name = "Remove ruler" }; var i18 = new Node() { Parent = e3, Name = "Slide arm in" }; var i19 = new Node() { Parent = e3, Name = "Fasten screw" };
         //Event 4 has 6 interactions
-        var i20 = new Node() { Parent = e4, Name = "Slide mount onto arm" }; var i21 = new Node() { Parent = e4, Name = "Fix mount w screwdriver" }; var i22 = new Node() { Parent = e4, Name = "Align cardboard" }; var i23 = new Node() { Parent = e4, Name = "Drill holes" }; var i24 = new Node() { Parent = e4, Name = "Fix plate with wrench" }; var i25 = new Node() { Parent = e4, Name = "Tape on camera" };
+        var i20 = new Node() { Parent = e4, Name = "Slide mount onto arm" }; var i21 = new Node() { Parent = e4, Name = "Fix mount w screwdriver" }; var i22 = new Node() { Parent = e4, Name = "Align cardboard" }; var i23 = new Node() { Parent = e4, Name = "Drill holes" }; var i29 = new Node() { Parent = e4, Name = "Insert screws" }; var i24 = new Node() { Parent = e4, Name = "Fix plate with wrench" }; var i30 = new Node() { Parent = e4, Name = "Finish" };
 
         //Each event 1 interaction has 1 aNode
         var a0 = new Node() { Position = Anow, Parent = i0, };  var a1 = new Node() { Position = Anext, Parent = i1 }; var a2 = new Node() { Parent = i2 }; var a3 = new Node() { Parent = i3 };
         //i5 has 2 aNodes, i6 has 1, i7 has 1, i8 has 1, i9 has 2, i10 has 1, i11 has 1, i12 has 1
         var a4 = new Node() { Parent = i5 }; var a5 = new Node() { Parent = i5 }; var a6 = new Node() { Parent= i6 }; var a7 = new Node() { Parent = i7 }; var a8 = new Node() { Parent = i8 }; var a9 = new Node() {Parent = i9}; var a10 = new Node() { Parent = i9 }; var a11 = new Node() { Parent = i10 }; var a12 = new Node() { Parent = i11 }; var a13 = new Node() { Parent = i12 };
         //i13 has 2, i14 has 1, i15 has 2, i16 has 1
-        var a14 = new Node() { Parent = i13 }; var a15 = new Node() {Parent = i13 }; var a16 = new Node() {Parent = i14 }; var a17 = new Node() {Parent = i15 }; var a18 = new Node() { Parent = i15 }; var a19 = new Node() {Parent = i16 }; 
+        var a14 = new Node() { Parent = i13 }; /*var a15 = new Node() {Parent = i13 };*/ var a33 = new Node() { Parent = i26 }; var a16 = new Node() {Parent = i14 }; var a17 = new Node() {Parent = i15 }; var a18 = new Node() { Parent = i15 }; var a19 = new Node() {Parent = i16 }; 
         //i17 has 2, i18 has 1, i19 has 2
-        var a20 = new Node() {Parent = i17 }; var a21 = new Node() {Parent = i17 }; var a22 = new Node() { Parent = i18 }; var a23 = new Node() {Parent = i19 }; var a24 = new Node() { Parent = i19 };
+        var a20 = new Node() {Parent = i17 }; var a21 = new Node() {Parent = i27 }; var a39 = new Node() { Parent = i28 }; var a22 = new Node() { Parent = i18 };  var a23 = new Node() {Parent = i19 }; var a24 = new Node() { Parent = i19 };
         //i20 has 1, i21 has 2, i22 has 2, i23 has 1, i24 has 1, i25 has 1
-        var a25 = new Node() {Parent = i20 }; var a26 = new Node() {Parent= i21 }; var a27 = new Node() {Parent = i21 }; var a28 = new Node() {Parent = i22 }; var a29 = new Node() { Parent= i22 }; var a30 = new Node() {Parent = i23 }; var a31 = new Node() {Parent = i24 }; var a32 = new Node() { Parent = i25 };
+        var a25 = new Node() {Parent = i20 }; var a26 = new Node() {Parent= i21 }; var a27 = new Node() {Parent = i21 }; var a28 = new Node() {Parent = i22 }; var a29 = new Node() { Parent= i22 }; var a30 = new Node() {Parent = i23 }; var a38 = new Node() { Parent = i29 }; var a31 = new Node() {Parent = i24 }; var a32 = new Node() { Parent = i30 }; var a34 = new Node() { Parent = i30 };
 
 
         graph.eNodes.Add(e0); graph.eNodes.Add(e1); graph.eNodes.Add(e2); graph.eNodes.Add(e3); graph.eNodes.Add(e4);
-        graph.iNodes.Add(i0); graph.iNodes.Add(i1); graph.iNodes.Add(i2); graph.iNodes.Add(i3); graph.iNodes.Add(i5); graph.iNodes.Add(i6); graph.iNodes.Add(i7); graph.iNodes.Add(i8); graph.iNodes.Add(i9); graph.iNodes.Add(i10); graph.iNodes.Add(i11); graph.iNodes.Add(i12); graph.iNodes.Add(i13); graph.iNodes.Add(i14); graph.iNodes.Add(i15); graph.iNodes.Add(i16); 
-        graph.iNodes.Add(i17); graph.iNodes.Add(i18); graph.iNodes.Add(i19); graph.iNodes.Add(i20); graph.iNodes.Add(i21); graph.iNodes.Add(i22); graph.iNodes.Add(i23); graph.iNodes.Add(i24); graph.iNodes.Add(i25);
-        graph.aNodes.Add(a0); graph.aNodes.Add(a1); graph.aNodes.Add(a2); graph.aNodes.Add(a3); graph.aNodes.Add(a4); graph.aNodes.Add(a5); graph.aNodes.Add(a6); graph.aNodes.Add(a7); graph.aNodes.Add(a8); graph.aNodes.Add(a9); graph.aNodes.Add(a10); graph.aNodes.Add(a11); graph.aNodes.Add(a12); graph.aNodes.Add(a1); graph.aNodes.Add(a14); graph.aNodes.Add(a15); graph.aNodes.Add(a16); 
-        graph.aNodes.Add(a17); graph.aNodes.Add(a18); graph.aNodes.Add(a19); graph.aNodes.Add(a20); graph.aNodes.Add(a21); graph.aNodes.Add(a22); graph.aNodes.Add(a23); graph.aNodes.Add(a24); graph.aNodes.Add(a25); graph.aNodes.Add(a26); graph.aNodes.Add(a27); graph.aNodes.Add(a28); graph.aNodes.Add(a29); graph.aNodes.Add(a30); graph.aNodes.Add(a31); graph.aNodes.Add(a32);
+        graph.iNodes.Add(i0); graph.iNodes.Add(i1); graph.iNodes.Add(i2); graph.iNodes.Add(i3); graph.iNodes.Add(i5); graph.iNodes.Add(i6); graph.iNodes.Add(i7); graph.iNodes.Add(i8); graph.iNodes.Add(i9); graph.iNodes.Add(i10); graph.iNodes.Add(i11); graph.iNodes.Add(i12); graph.iNodes.Add(i13); graph.iNodes.Add(i26); graph.iNodes.Add(i14); graph.iNodes.Add(i15); graph.iNodes.Add(i16);
+        graph.iNodes.Add(i17); graph.iNodes.Add(i27); graph.iNodes.Add(i28); graph.iNodes.Add(i18); graph.iNodes.Add(i19); graph.iNodes.Add(i20); graph.iNodes.Add(i21); graph.iNodes.Add(i22); graph.iNodes.Add(i23); graph.iNodes.Add(i29); graph.iNodes.Add(i24); graph.iNodes.Add(i30);
+        
+        graph.aNodes.Add(a0); graph.aNodes.Add(a1); graph.aNodes.Add(a2); graph.aNodes.Add(a3); graph.aNodes.Add(a4); graph.aNodes.Add(a5); graph.aNodes.Add(a6); graph.aNodes.Add(a7); graph.aNodes.Add(a8); graph.aNodes.Add(a9); graph.aNodes.Add(a10); graph.aNodes.Add(a11); graph.aNodes.Add(a12); graph.aNodes.Add(a13); graph.aNodes.Add(a14); graph.aNodes.Add(a33); /*graph.aNodes.Add(a15);*/ graph.aNodes.Add(a16); 
+        graph.aNodes.Add(a17); graph.aNodes.Add(a18); graph.aNodes.Add(a19); graph.aNodes.Add(a20); graph.aNodes.Add(a21); graph.aNodes.Add(a39); graph.aNodes.Add(a22);  graph.aNodes.Add(a23); graph.aNodes.Add(a24); graph.aNodes.Add(a25); graph.aNodes.Add(a26); graph.aNodes.Add(a27); graph.aNodes.Add(a28); graph.aNodes.Add(a29); graph.aNodes.Add(a30); graph.aNodes.Add(a38); graph.aNodes.Add(a31); graph.aNodes.Add(a32); graph.aNodes.Add(a34);
     }
 
     public class Graph

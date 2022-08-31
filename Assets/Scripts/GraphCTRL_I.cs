@@ -352,11 +352,11 @@ public class GraphCTRL_I : MonoBehaviour
         //Event 3 has 3 interactions
         var i17 = new Node() { Parent = e3, Name = "Measure 1ft. from top" }; var i27 = new Node() { Parent = e3, Name = "Mark location" }; var i28 = new Node() { Parent = e3, Name = "Remove ruler" }; var i18 = new Node() { Parent = e3, Name = "Slide arm in" }; var i19 = new Node() { Parent = e3, Name = "Fasten screw" };
         //Event 4 has 6 interactions
-        var i20 = new Node() { Parent = e4, Name = "Slide mount onto arm" }; var i21 = new Node() { Parent = e4, Name = "Fix mount w screwdriver" }; var i22 = new Node() { Parent = e4, Name = "Align cardboard" }; var i23 = new Node() { Parent = e4, Name = "Drill holes" }; var i24 = new Node() { Parent = e4, Name = "Fix plate with wrench" };
+        var i20 = new Node() { Parent = e4, Name = "Slide mount onto arm" }; var i21 = new Node() { Parent = e4, Name = "Fix mount w screwdriver" }; var i22 = new Node() { Parent = e4, Name = "Align cardboard" }; var i23 = new Node() { Parent = e4, Name = "Drill holes" }; var i29 = new Node() { Parent = e4, Name = "Insert screws" }; var i24 = new Node() { Parent = e4, Name = "Fix plate with wrench" }; var i30 = new Node() { Parent = e4, Name = "Finish" };
 
         graph.eNodes.Add(e0); graph.eNodes.Add(e1); graph.eNodes.Add(e2); graph.eNodes.Add(e3); graph.eNodes.Add(e4);
         graph.iNodes.Add(i0); graph.iNodes.Add(i1); graph.iNodes.Add(i2); graph.iNodes.Add(i3); graph.iNodes.Add(i5); graph.iNodes.Add(i6); graph.iNodes.Add(i7); graph.iNodes.Add(i8); graph.iNodes.Add(i9); graph.iNodes.Add(i10); graph.iNodes.Add(i11); graph.iNodes.Add(i12); graph.iNodes.Add(i13); graph.iNodes.Add(i26); graph.iNodes.Add(i14); graph.iNodes.Add(i15); graph.iNodes.Add(i16); 
-        graph.iNodes.Add(i17); graph.iNodes.Add(i27); graph.iNodes.Add(i28); graph.iNodes.Add(i18); graph.iNodes.Add(i19); graph.iNodes.Add(i20); graph.iNodes.Add(i21); graph.iNodes.Add(i22); graph.iNodes.Add(i23); graph.iNodes.Add(i24);
+        graph.iNodes.Add(i17); graph.iNodes.Add(i27); graph.iNodes.Add(i28); graph.iNodes.Add(i18); graph.iNodes.Add(i19); graph.iNodes.Add(i20); graph.iNodes.Add(i21); graph.iNodes.Add(i22); graph.iNodes.Add(i23); graph.iNodes.Add(i29); graph.iNodes.Add(i24); graph.iNodes.Add(i30);
 
     }
 
